@@ -17,10 +17,11 @@ regirock = r"(?<=\+).*(?=<sp)"
 #registeel = r"\+\d{1}.\d{3}"
 regileci = r"(?<=>)DNF(?=<)"
 regigigas = r"(?<=mobile\">).*(?=<\/td>\n<td class=\"dark bold\">\n<span class=\"hide-for-tablet\">)"
-
-#finding driver number values
+# def theMagic(): 
+#     for matchNum, match in enumerate(matches, start=1):
+#         print ("{match}".format(matches, start = match.start(), end = match.end(), match = match.group()))
+# #finding driver number values
 #this searches for class and subclass to allow easier regex 
-
 pageTextArchiveTable = doc.find(class_="inner-wrap ResultArchiveWrapper").find(class_="resultsarchive-table")
 stringTable = str(pageTextArchiveTable)
 
@@ -60,5 +61,10 @@ for matchNum, match in enumerate(matches, start=1):
     print ("{match}".format(matchNum, start = match.start(), end = match.end(), match = match.group()))
 
 #print(pageTextArchiveTable)
+
+
+
+
+
 
 

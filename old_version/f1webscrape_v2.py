@@ -11,7 +11,9 @@ websiteSource = 'https://www.formula1.com/en/results.html/2022/races/1125/saudi-
 websiteSource2 = 'https://www.formula1.com/en/results.html/2022/races/1124/bahrain/race-result.html'
 
 #/races/(pagenumber)1100-1140/(trackname)/race-result.html
-regex = r"(?<=^)\s*\w*\W\d.*"
+# regex = r"(?<=^)\s*\w*\W\d.*"
+firstPlaceRegex = re.compile("\w*\d:\d*:\d*.\d*")
+otherPlaceRegex = re.compile(r"\w*\+\d*.\d*s\d*")
 #debug tools
 def debugBlue(x): print(Fore.CYAN + x)
 def debugRed(x): print(Fore.RED + x)
@@ -22,11 +24,16 @@ soupData = requests.get(websiteSource2).text
 doc = BeautifulSoup(soupData, "html.parser")
 tables = doc.find_all("table")
 
+# use for filtering data
+# x is the place regex search
+def pullTableLapDataText(x):
+    dataForDataFrame = x.findall(filterData)
+    dataToString = pd.DataFrame(dataForDataFrame)
+    stringForExport = dataToString.to_string(index=False)
+    print(stringForExport)
+
 #storage arrays
 lapTime = []
-driverNum = []
-pullInfo = []
-sortedInfo =[]
 
 for my_table in tables:
     rows = my_table.findChildren('td')
@@ -36,22 +43,15 @@ for my_table in tables:
         lapTime.append(cells)
         whiteSpaceRemove = ''.join(lapTime).split()
         df = pd.DataFrame(whiteSpaceRemove)
-        
-        filteredData = df.to_string(index=False)
-        
-        regFilteredData = re.finditer(regex, filteredData, re.MULTILINE)
-        for matchNum, match in enumerate(regFilteredData):
-            nameDict = {("{match}".format(regFilteredData, match = match.group()))}
-            sortedInfo.append(nameDict)
-    debugBlue
-    print(filteredData)        
-    # debugGreen('___regex___')
-    # print(sortedInfo)
-        
-#     debugBlue('-------data--------')
-#     print(df.to_string(index=False))
-# debugRed('---whitespace---')    
-# print(whiteSpaceRemove)
+        filterData = df.to_string(index=False)  
+    pullTableLapDataText(firstPlaceRegex)
+    pullTableLapDataText(otherPlaceRegex)  
+
+
+
+
+
+
 
      
 
