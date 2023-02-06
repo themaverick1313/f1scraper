@@ -18,34 +18,19 @@ otherPlaceRegex = re.compile(r"\w*\+\d*.\d*s\d*")
 teamNameRegex = re.compile(r"^\s*[a-zA-Z]*")
 fastestTimeRegex = re.compile(r"(?<=\w\d{2})\d{1}:\d{2}:\d{2}.\d*$")
 
+#storage arrays
+lapTime = []
+teamNames = []
+
 #debug tools
 def debugBlue(x): print(Fore.CYAN + x)
 def debugRed(x): print(Fore.RED + x)
 def debugGreen(x): print(Fore.GREEN + x)
    
 #grabbing html from webstie
-soupData = requests.get(websiteSource2).text
+soupData = requests.get(websiteSource).text
 doc = BeautifulSoup(soupData, "html.parser")
 tables = doc.find_all("table")
-
-# =============Functions=============
-
-# x is the place regex search
-# use for filtering data
-def pullTableLapDataText(x):
-    dataForDataFrame1 = x.findall(filterData)
-    dataToString2 = pd.DataFrame(dataForDataFrame1)
-    breakIntoColumns3 = dataToString2.to_string(index=False, header=False)
-    debugGreen('break')
-    print(breakIntoColumns3)
-    teamName4 = teamNameRegex.findall(breakIntoColumns3)
-    teamdf5 = pd.DataFrame(teamName4)
-    debugRed('teamname')
-    print(teamdf5.to_string(index=False, header=False))
-
-
-#storage arrays
-lapTime = []
 
 for my_table in tables:
     rows = my_table.findChildren('td')
@@ -55,8 +40,25 @@ for my_table in tables:
         lapTime.append(cells)
         whiteSpaceRemove = ''.join(lapTime).split()
         df = pd.DataFrame(whiteSpaceRemove)
-        filterData = df.to_string(index=False, header=False)  
+        filterData = df.to_string(index=False, header=False)
 
-    pullTableLapDataText(firstPlaceRegex)
-    debugBlue('other place')
-    pullTableLapDataText(otherPlaceRegex)  
+# =============Functions=============
+
+# x is the place regex search
+# use for filtering data
+#this runs withing the for loop, filterData needs to be created from the for loop before this can be used
+def pullTableLapDataText(x,y):
+    # dataForDataFrame1 = regex is determined by x in the function, use regex from above, and pull the filterData based on that
+    dataForDataFrame1 = x.findall(filterData)
+    #this takes the results from above and puts them into a df for pandas and then uses these results to put to a string
+    dataToString2 = pd.DataFrame(dataForDataFrame1)
+    #puts it into a string, without the 0,0 for index and header so it doesn't end up in the final array
+    breakIntoColumns3 = dataToString2.to_string(index=False, header=False)
+    #uses the results from above to find all the matches based on y from above in the function
+    names = y.findall(breakIntoColumns3)
+    teamNames.append(names)
+    teamdf5 = pd.DataFrame(teamNames)
+    teamdf6 = teamdf5.to_string(index=False, header=False)
+    print(teamNames)
+    
+pullTableLapDataText(firstPlaceRegex,teamNameRegex)
