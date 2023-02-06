@@ -12,12 +12,12 @@ websiteSource2 = 'https://www.formula1.com/en/results.html/2022/races/1124/bahra
 
 #/races/(pagenumber)1100-1140/(trackname)/race-result.html
 
-# regex = r"(?<=^)\s*\w*\W\d.*"
 firstPlaceRegex = re.compile("\w*\d:\d*:\d*.\d*")
 otherPlaceRegex = re.compile(r"\w*\+\d*.\d*s\d*")
 teamNameRegex = re.compile(r"^\s*[a-zA-Z]*")
 fastestTimeRegex = re.compile(r"(?<=\w\d{2})\d{1}:\d{2}:\d{2}.\d*$")
-
+otherTimeRegex = re.compile(r"(?<=\+)\d*.\d*s\d*")
+(?<=\+)\d*.\d*s\d{3}
 #storage arrays
 lapTime = []
 teamNames = []
@@ -31,7 +31,7 @@ def debugGreen(x): print(Fore.GREEN + x)
 soupData = requests.get(websiteSource).text
 doc = BeautifulSoup(soupData, "html.parser")
 tables = doc.find_all("table")
-
+#creates filterData to be used
 for my_table in tables:
     rows = my_table.findChildren('td')
     for row in rows:
@@ -44,21 +44,26 @@ for my_table in tables:
 
 # =============Functions=============
 
-# x is the place regex search
+# x,y is the place regex search
 # use for filtering data
 #this runs withing the for loop, filterData needs to be created from the for loop before this can be used
 def pullTableLapDataText(x,y):
+    #this function pulls out the raw sting for parsing ex. "Mercedes50+91.742s01318" to then be broken into team name and time and number
     # dataForDataFrame1 = regex is determined by x in the function, use regex from above, and pull the filterData based on that
     dataForDataFrame1 = x.findall(filterData)
+    print(filterData)
     #this takes the results from above and puts them into a df for pandas and then uses these results to put to a string
-    dataToString2 = pd.DataFrame(dataForDataFrame1)
+    dataToString1 = pd.DataFrame(dataForDataFrame1)
     #puts it into a string, without the 0,0 for index and header so it doesn't end up in the final array
-    breakIntoColumns3 = dataToString2.to_string(index=False, header=False)
-    #uses the results from above to find all the matches based on y from above in the function
-    names = y.findall(breakIntoColumns3)
+    breakIntoColumns1 = dataToString1.to_string(index=False, header=False)
+    #uses results in breakIntoColumns1 to find all the matches based on y from pullTableLapDataText
+    names = y.findall(breakIntoColumns1)
     teamNames.append(names)
-    teamdf5 = pd.DataFrame(teamNames)
-    teamdf6 = teamdf5.to_string(index=False, header=False)
-    print(teamNames)
-    
-pullTableLapDataText(firstPlaceRegex,teamNameRegex)
+    teamdNamesdf = pd.DataFrame(teamNames)
+    teamNamesString = teamdNamesdf.to_string(index=False, header=False)
+    #use breakintocolumns1 to do the regex because it is pushed to string and can be iterated
+    dataforDataFrame2 = otherTimeRegex.findall(breakIntoColumns1)
+
+pullTableLapDataText(otherPlaceRegex,teamNameRegex)
+debugGreen('fasttime')
+pullTableLapDataText(firstPlaceRegex,fastestTimeRegex)
