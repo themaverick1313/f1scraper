@@ -49,7 +49,16 @@ for my_table in tables:
 # x,y is the place regex search
 # use for filtering data
 #this runs withing the for loop, filterData needs to be created from the for loop before this can be used
-def pullTableLapDataText(regex1,regex2,regex3):
+def function(returnedValue,regex1,regex2):
+    debugBlue('running test function')
+    variable1 = regex1.findall(regex2)
+    variable1todataframe = pd.DataFrame(variable1)
+    returnedValue = variable1todataframe.to_string(index=False, header=False)
+    debugGreen('inside print')
+    print(returnedValue)
+    return returnedValue
+
+def pullTableLapDataText(regex1,regex2):
     #this function pulls out the raw sting for parsing ex. "Mercedes50+91.742s01318" to then be broken into team name and time and number
     # dataForDataFrame1 = regex is determined by x in the function, use regex from above, and pull the filterData based on that
     #this takes the results from above and puts them into a df for pandas and then uses these results to put to a string
@@ -73,10 +82,12 @@ def pullTableLapDataText(regex1,regex2,regex3):
     print('firstNamestring')
     print(teamNamesString)
     #you found what you are looking for
+    function(df,fastestTimeRegex,breakIntoColumns1)
+    debugRed('outside print')
 
-    fastestRace = regex3.findall(breakIntoColumns1)
-    fastestTime.append(fastestRace)
-    fastestTime
+    # fastestRace = regex3.findall(breakIntoColumns1)
+    # fastestTime.append(fastestRace)
+    # fastestTime
 
     # otherNames = otherPlaceRegex.findall(breakIntoColumns1)
     # print(otherNames)
@@ -93,6 +104,4 @@ pullTableLapDataText(firstPlaceRegex,teamNameRegex)
 
 
 # turn this into a function?
-# variable1 = regex1.findall(dataset)
-# variable1todataframe = pd.DataFrame(variable1)
-# variable2 = variable1todataframe.to_string(index=False, header=False)
+
