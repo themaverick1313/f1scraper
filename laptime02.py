@@ -1,4 +1,5 @@
 import math
+from pprint import pprint
 
 class colors:
     class fg:
@@ -77,15 +78,16 @@ def getLapTimeTotal():
 
 # getLapTimeTotal()
 lapAcceleration(firstTurnRadius,accelerationTable)
-def printtable(x):
-    for i in x:
-        print(i)
-printtable(accelerationTable)
+# def printtable(x):
+#     for i in x:
+#         print(i)
+# printtable(accelerationTable)
+pprint(accelerationTable)
+getLapTimeTotal()
+print('\n')
+lapAcceleration(secondTurnRadius,decelerationTable)
 # getLapTimeTotal()
-# print('\n')
-# lapAcceleration(secondTurnRadius,decelerationTable)
-# # getLapTimeTotal()
 
-# finalTable = [min(*item) for item in zip(accelerationTable,decelerationTable)]
-# for x,y,z in zip(finalTable,accelerationTable,decelerationTable):
-#     print(colors.fg.green,x,colors.fg.red,y,colors.fg.orange,z)
+finalTable = [min(*item) for item in zip(accelerationTable,decelerationTable)]
+for x,y,z in zip(finalTable,accelerationTable,decelerationTable):
+    print(colors.fg.green,x,colors.fg.red,y,colors.fg.orange,z)
